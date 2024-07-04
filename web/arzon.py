@@ -34,8 +34,7 @@ def parse_data(movie: MovieInfo):
     data = html.fromstring(r.content)
 
     urls = data.xpath("//div[@class='pictlist']//h2/a/@href")
-    print(url)
-    if len(url) == 0:
+    if len(urls) == 0:
         raise MovieNotFoundError(__name__, movie.dvdid)
 
     item_url = base_url + urls[0]
@@ -90,7 +89,7 @@ if __name__ == "__main__":
     pretty_errors.configure(display_link=True)
     logger.root.handlers[1].level = logging.DEBUG
 
-    movie = MovieInfo('csct-012')
+    movie = MovieInfo('SHMO-031')
     try:
         parse_data(movie)
         print(movie)
