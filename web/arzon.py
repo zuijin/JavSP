@@ -27,13 +27,14 @@ def parse_data(movie: MovieInfo):
     full_id = movie.dvdid
     cookies = get_cookie()
     url = f'{base_url}/itemlist.html?t=&m=all&s=&q={full_id}'
+    # url = f'{base_url}/imagelist.html?q={full_id}'
     r = request_get(url, cookies, delay_raise=True)
     if r.status_code == 404:
       raise MovieNotFoundError(__name__, movie.dvdid)
     # https://stackoverflow.com/questions/15830421/xml-unicode-strings-with-encoding-declaration-are-not-supported
     data = html.fromstring(r.content)
 
-    urls = data.xpath("//div[@class='pictlist']//h2/a/@href")
+    urls = data.xpath("//h2/a/@href")
     if len(urls) == 0:
         raise MovieNotFoundError(__name__, movie.dvdid)
 
@@ -43,6 +44,8 @@ def parse_data(movie: MovieInfo):
 
     title = item.xpath("//div[@class='detail_title_new2']//h1/text()")[0]
     cover = item.xpath("//td[@align='center']//a/img/@src")[0]
+    item_text = item.xpath("//div[@class='item_text']/text()")
+    plot = [item.strip() for item in item_text if item.strip() != ''][0]
     preview_pics_arr = item.xpath("//div[@class='detail_img']//img/@src")
     # 使用列表推导式添加 "http:" 并去除 "m_"
     preview_pics = [("https:" + url).replace("m_", "") for url in preview_pics_arr]
@@ -65,7 +68,6 @@ def parse_data(movie: MovieInfo):
       if key == "監督：":
         movie.director = value
       if key == "発売日：" and value:
-        # publish_date = content[0].split(" ")[0].replace("/", "-")
         movie.publish_date = re.search(r"\d{4}/\d{2}/\d{2}", value).group(0).replace("/", "-")
       if key == "収録時間：" and value:
         movie.duration = re.search(r'([\d.]+)分', value).group(1)
@@ -81,6 +83,7 @@ def parse_data(movie: MovieInfo):
     movie.genre = genres
     movie.url = item_url
     movie.title = title
+    movie.plot = plot
     movie.cover = f'https:{cover}'
     movie.preview_pics = preview_pics
 
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     pretty_errors.configure(display_link=True)
     logger.root.handlers[1].level = logging.DEBUG
 
-    movie = MovieInfo('SHMO-031')
+    movie = MovieInfo('csct-011')
     try:
         parse_data(movie)
         print(movie)
