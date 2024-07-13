@@ -76,7 +76,9 @@ def parse_data(movie: MovieInfo):
       elif key == "タグ：":
         genre  = value
 
-    genres = [video_type]
+    genres = ''
+    if video_type:
+      genres = [video_type]
     if(genre != None):
       genres.append(genre)
 
