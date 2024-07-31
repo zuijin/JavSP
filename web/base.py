@@ -21,7 +21,7 @@ from core.config import cfg
 __all__ = ['Request', 'get_html', 'post_html', 'request_get', 'resp2html', 'is_connectable', 'download', 'get_resp_text']
 
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0'}
 
 logger = logging.getLogger(__name__)
 # 删除js脚本相关的tag，避免网页检测到没有js运行环境时强行跳转，影响调试
@@ -192,6 +192,8 @@ def is_connectable(url, timeout=3):
 
 
 def urlretrieve(url, filename=None, reporthook=None, data=None):
+    if "arzon" in url:
+        headers["Referer"] = "https://www.arzon.jp/"
     """使用requests实现urlretrieve"""
     # https://blog.csdn.net/qq_38282706/article/details/80253447
     with contextlib.closing(requests.get(url, headers=headers,
