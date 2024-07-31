@@ -273,6 +273,7 @@ def norm_boolean(cfg: Config):
             ('NFO', 'add_custom_genres'),
             ('Other', 'check_update'),
             ('Other', 'auto_update'),
+            ('Other', 'auto_exit'),
             ('File', 'enable_file_move'),
         ]:
         cfg._sections[sec][key] = cfg.getboolean(sec, key)
