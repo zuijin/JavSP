@@ -95,6 +95,12 @@ def parse_data(movie: MovieInfo):
     for keyword in keywords:
        title = re.sub(re.escape(keyword), "", title, flags=re.I)
 
+    # 判断是否无码
+    uncensored_arr = magnet + [title]
+    for uncensored_str in uncensored_arr:
+        if 'uncensored' in uncensored_str.lower():
+            uncensored = True
+
     movie.url = url
     movie.title = title
     movie.genre = genre
@@ -124,7 +130,7 @@ if __name__ == "__main__":
     pretty_errors.configure(display_link=True)
     logger.root.handlers[1].level = logging.DEBUG
 
-    movie = MovieInfo('FC2-2735981')
+    movie = MovieInfo('012023_002')
     try:
         parse_data(movie)
         print(movie)
